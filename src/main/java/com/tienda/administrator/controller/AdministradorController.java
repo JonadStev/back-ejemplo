@@ -1,5 +1,6 @@
 package com.tienda.administrator.controller;
 
+import com.google.gson.Gson;
 import com.tienda.corebusiness.model.Categoria;
 import com.tienda.corebusiness.model.Producto;
 import com.tienda.corebusiness.service.CategoriaService;
@@ -8,8 +9,11 @@ import com.tienda.corebusiness.service.ProductoService;
 import com.tienda.security.model.Usuario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -46,7 +50,12 @@ public class AdministradorController {
     // ENDPOINT PARA LOS PRODUCTOS
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/saveProducto")
-    public Producto saveProducto(@RequestBody Producto producto){
+    public Producto saveProducto(@RequestParam("producto") String strProducto ,@RequestParam("fichero") MultipartFile file) throws IOException {
+        String fileName = file.getOriginalFilename();
+        String uploadDir = "img/productos";
+        Gson gson = new Gson();
+        Producto producto = gson.fromJson(strProducto, Producto.class);
+        producto.setSrcImage(uploadDir+"/"+fileName);
         return productoService.saveProducto(producto);
     }
 
