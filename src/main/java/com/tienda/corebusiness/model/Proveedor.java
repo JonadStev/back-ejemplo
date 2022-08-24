@@ -16,10 +16,13 @@ public class Proveedor {
 
     private String telefono;
 
-    public Proveedor(String nombre, String correo, String telefono) {
+    private String estado;
+
+    public Proveedor(String nombre, String correo, String telefono, String estado) {
         this.nombre = nombre;
         this.correo = correo;
         this.telefono = telefono;
+        this.estado = estado;
     }
 
     public Proveedor() {
@@ -55,5 +58,13 @@ public class Proveedor {
 
     public void setTelefono(String telefono) {
         this.telefono = telefono;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
     }
 }

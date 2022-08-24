@@ -1,5 +1,6 @@
 package com.tienda.security.controller;
 
+import com.tienda.Mail.EnvioEmail;
 import com.tienda.security.service.RolService;
 import com.tienda.security.service.UsuarioService;
 import com.tienda.security.dto.JwtDto;
@@ -19,8 +20,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.nio.charset.Charset;
 import java.text.ParseException;
 import java.util.HashSet;
+import java.util.Random;
 import java.util.Set;
 
 @RestController
@@ -43,8 +46,12 @@ public class AuthController {
     @Autowired
     JwtProvider jwtProvider;
 
+    @Autowired
+    EnvioEmail envioEmail;
+
     @PostMapping("/nuevo")
     public ResponseEntity<?> nuevo(@RequestBody NuevoUsuario nuevoUsuario){
+        String passwordDelivery = "";
         if(usuarioService.existsByNombreUsuario(nuevoUsuario.getNombreUsuario()))
             return new ResponseEntity("El nombre de usuario ya existe", HttpStatus.BAD_REQUEST);
         if(usuarioService.existsByEmail(nuevoUsuario.getEmail()))
@@ -57,8 +64,16 @@ public class AuthController {
                 nuevoUsuario.getDireccion()
         );
         Set<Rol> roles = new HashSet<>();
-        if(nuevoUsuario.getRoles().contains("delivery"))
+        if(nuevoUsuario.getRoles().contains("delivery")){
             roles.add(rolService.getByRolNombre(RolNombre.ROLE_DELIVERY).get());
+            passwordDelivery = this.getRandomString(10);
+            usuario.setPassword(passwordEncoder.encode(passwordDelivery));
+            try {
+                envioEmail.sendEmail(usuario.getEmail(),"CONTRASEÑA TEMPORAL", "Esta es su contraseña temporal: "+passwordDelivery);
+            }catch (Exception e){
+                System.out.println("Ocurrio un error en el envio de correo: "+e);
+            }
+        }
         else
             roles.add(rolService.getByRolNombre(RolNombre.ROLE_USER).get());
         if(nuevoUsuario.getRoles().contains("admin")){
@@ -88,4 +103,36 @@ public class AuthController {
         JwtDto jwt = new JwtDto(token);
         return new ResponseEntity(jwt, HttpStatus.OK);
     }
+
+    private String getRandomString(int i)
+    {
+        // bind the length
+        byte[] bytearray;
+        bytearray = new byte[256];
+        String mystring;
+        StringBuffer thebuffer;
+        String theAlphaNumericS;
+
+        new Random().nextBytes(bytearray);
+
+        mystring = new String(bytearray, Charset.forName("UTF-8"));
+
+        thebuffer = new StringBuffer();
+
+        //remove all spacial char
+        theAlphaNumericS = mystring.replaceAll("[^A-Z0-9]", "");
+
+        //random selection
+        for (int m = 0; m < theAlphaNumericS.length(); m++) {
+            if (Character.isLetter(theAlphaNumericS.charAt(m))
+                    && (i > 0)
+                    || Character.isDigit(theAlphaNumericS.charAt(m))
+                    && (i > 0)) {
+                thebuffer.append(theAlphaNumericS.charAt(m));
+                i--;
+            }
+        }
+        return thebuffer.toString();
+    }
+
 }
