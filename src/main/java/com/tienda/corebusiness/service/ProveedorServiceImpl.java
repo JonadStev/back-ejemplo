@@ -28,6 +28,12 @@ public class ProveedorServiceImpl implements ProveedorService {
     }
 
     @Override
+    public ArrayList<Proveedor> getProveedoresAdmin() {
+        ArrayList<Proveedor> lista = (ArrayList<Proveedor>) proveedorRepository.findAll();
+        return lista;
+    }
+
+    @Override
     public Optional<Proveedor> getProveedorById(long id) {
         //envioEmail.sendEmail("jona.steven001@gmail.com", "PRUEBA", "ASDFASDFADFA");
         return proveedorRepository.findById(id);

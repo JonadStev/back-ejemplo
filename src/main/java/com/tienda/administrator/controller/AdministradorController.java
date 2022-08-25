@@ -102,7 +102,7 @@ public class AdministradorController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/proveedores")
     public List<Proveedor> getProveedores(){
-        return proveedorService.getProveedores();
+        return proveedorService.getProveedoresAdmin();
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")

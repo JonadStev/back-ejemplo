@@ -1,6 +1,8 @@
 package com.tienda.security.controller;
 
 import com.tienda.Mail.EnvioEmail;
+import com.tienda.corebusiness.model.Categoria;
+import com.tienda.corebusiness.service.CategoriaService;
 import com.tienda.security.service.RolService;
 import com.tienda.security.service.UsuarioService;
 import com.tienda.security.dto.JwtDto;
@@ -23,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 import java.nio.charset.Charset;
 import java.text.ParseException;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
@@ -69,7 +72,7 @@ public class AuthController {
             passwordDelivery = this.getRandomString(10);
             usuario.setPassword(passwordEncoder.encode(passwordDelivery));
             try {
-                envioEmail.sendEmail(usuario.getEmail(),"CONTRASEÑA TEMPORAL", "Esta es su contraseña temporal: "+passwordDelivery);
+                envioEmail.sendEmail(usuario.getEmail(),"CONTRASEÑA TEMPORAL", "Este es su usuario y contraseña temporal: "+usuario.getNombreUsuario()+" - "+passwordDelivery);
             }catch (Exception e){
                 System.out.println("Ocurrio un error en el envio de correo: "+e);
             }

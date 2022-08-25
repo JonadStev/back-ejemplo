@@ -10,6 +10,7 @@ public interface ProveedorService {
     Proveedor saveProveedor(Proveedor proveedor);
 
     ArrayList<Proveedor> getProveedores();
+    ArrayList<Proveedor> getProveedoresAdmin();
 
     Optional<Proveedor> getProveedorById(long id);
 
