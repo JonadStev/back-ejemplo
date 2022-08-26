@@ -17,7 +17,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.zip.DataFormatException;
 import java.util.zip.Deflater;
@@ -134,8 +136,11 @@ public class AdministradorController {
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @GetMapping("/banner/delete/{id}")
-    public String deleteBannerById(@PathVariable("id") long id){
-        return bannerService.deleteBannerById(id);
+    @DeleteMapping("/banner/delete/{id}")
+    public Map<String, String> deleteBannerById(@PathVariable("id") long id){
+        Map<String, String> map = new HashMap<>();
+        map.put("message", "El banner ha sido elimiando");
+        bannerService.deleteBannerById(id);
+        return map;
     }
 }
