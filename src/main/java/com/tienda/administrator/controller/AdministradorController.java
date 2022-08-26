@@ -1,15 +1,15 @@
 package com.tienda.administrator.controller;
 
 import com.google.gson.Gson;
+import com.tienda.corebusiness.model.Banner;
 import com.tienda.corebusiness.model.Categoria;
 import com.tienda.corebusiness.model.Producto;
 import com.tienda.corebusiness.model.Proveedor;
-import com.tienda.corebusiness.service.CategoriaService;
-import com.tienda.corebusiness.service.DeliveryService;
-import com.tienda.corebusiness.service.ProductoService;
-import com.tienda.corebusiness.service.ProveedorService;
+import com.tienda.corebusiness.service.*;
 import com.tienda.security.model.Usuario;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -37,6 +37,9 @@ public class AdministradorController {
 
     @Autowired
     ProveedorService proveedorService;
+
+    @Autowired
+    BannerService bannerService;
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/saludar")
@@ -109,5 +112,30 @@ public class AdministradorController {
     @GetMapping("/proveedor/{id}")
     public Optional<Proveedor> getProveedor(@PathVariable("id") long id){
         return proveedorService.getProveedorById(id);
+    }
+
+    //ENDPOINT PARA BANNERS
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PostMapping("/saveBanner")
+    public Banner saveBanner(@RequestParam("banner") String strBanner , @RequestParam("fichero") MultipartFile file) throws IOException {
+        Gson gson = new Gson();
+        Banner banner = gson.fromJson(strBanner, Banner.class);
+        banner.setPicByte(bannerService.compressBytes(file.getBytes()));
+        return bannerService.saveBanner(banner);
+    }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @GetMapping("/banner/{id}")
+    public Banner getBannerById(@PathVariable("id") long id){
+        final Banner b = bannerService.getBannerById(id);
+        Banner banner = new Banner(b.getDescripcion(),bannerService.decompressBytes(b.getPicByte()));
+        banner.setId(b.getId());
+        return banner;
+    }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @GetMapping("/banner/delete/{id}")
+    public String deleteBannerById(@PathVariable("id") long id){
+        return bannerService.deleteBannerById(id);
     }
 }
