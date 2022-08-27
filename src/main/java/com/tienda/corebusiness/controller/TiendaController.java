@@ -37,7 +37,7 @@ public class TiendaController {
         List<Producto> productosCompress = productoService.getAllProductos();
         List<Producto> productosDescompress = new ArrayList<>();
         for(Producto p: productosCompress){
-            Producto producto = new Producto(p.getNombre(), p.getPrecio(),p.getStock(),p.getSrcImage(), productoService.decompressBytes(p.getPicByte()), p.getEstado(), p.getCategoria());
+            Producto producto = new Producto(p.getNombre(), p.getDescripcion(), p.getPrecio(),p.getStock(),p.getSrcImage(), productoService.decompressBytes(p.getPicByte()), p.getEstado(), p.getCategoria(), p.getProveedor());
             producto.setId(p.getId());
             productosDescompress.add(producto);
         }
@@ -47,7 +47,7 @@ public class TiendaController {
     @GetMapping("/producto/{id}")
     public Optional<Producto> getProductoById(@PathVariable("id") long id){
         final Optional<Producto> p = productoService.getProductoById(id);
-        Producto producto = new Producto(p.get().getNombre(), p.get().getPrecio(),p.get().getStock(),p.get().getSrcImage(), productoService.decompressBytes(p.get().getPicByte()), p.get().getEstado(), p.get().getCategoria());
+        Producto producto = new Producto(p.get().getNombre(), p.get().getDescripcion(), p.get().getPrecio(),p.get().getStock(),p.get().getSrcImage(), productoService.decompressBytes(p.get().getPicByte()), p.get().getEstado(), p.get().getCategoria(), p.get().getProveedor());
         producto.setId(p.get().getId());
         return Optional.of(producto);
     }

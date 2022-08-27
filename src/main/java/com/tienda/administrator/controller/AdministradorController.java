@@ -85,7 +85,7 @@ public class AdministradorController {
     @GetMapping("/producto/{id}")
     public Optional<Producto> getProductoById(@PathVariable("id") long id){
         final Optional<Producto> p = productoService.getProductoById(id);
-        Producto producto = new Producto(p.get().getNombre(), p.get().getPrecio(),p.get().getStock(),p.get().getSrcImage(), productoService.decompressBytes(p.get().getPicByte()), p.get().getEstado(), p.get().getCategoria());
+        Producto producto = new Producto(p.get().getNombre(), p.get().getDescripcion(), p.get().getPrecio(),p.get().getStock(),p.get().getSrcImage(), productoService.decompressBytes(p.get().getPicByte()), p.get().getEstado(), p.get().getCategoria(), p.get().getProveedor());
         producto.setId(p.get().getId());
         return Optional.of(producto);
     }

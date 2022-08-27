@@ -12,6 +12,8 @@ public class Producto {
 
     private String nombre;
 
+    private String descripcion;
+
     private double precio;
 
     private int stock;
@@ -27,7 +29,11 @@ public class Producto {
     @JoinColumn(name = "id_categoria")
     private Categoria categoria;
 
-    public Producto(String nombre, double precio, int stock, String srcImage, byte[] picByte, String estado, Categoria categoria) {
+    @OneToOne
+    @JoinColumn(name = "id_proveedor")
+    private Proveedor proveedor;
+
+    public Producto(String nombre, String descripcion, double precio, int stock, String srcImage, byte[] picByte, String estado, Categoria categoria, Proveedor proveedor) {
         this.nombre = nombre;
         this.precio = precio;
         this.stock = stock;
@@ -35,6 +41,8 @@ public class Producto {
         this.picByte = picByte;
         this.estado = estado;
         this.categoria = categoria;
+        this.descripcion = descripcion;
+        this.proveedor = proveedor;
     }
 
     public Producto() {
@@ -102,5 +110,21 @@ public class Producto {
 
     public void setPicByte(byte[] picByte) {
         this.picByte = picByte;
+    }
+
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
+
+    public Proveedor getProveedor() {
+        return proveedor;
+    }
+
+    public void setProveedor(Proveedor proveedor) {
+        this.proveedor = proveedor;
     }
 }

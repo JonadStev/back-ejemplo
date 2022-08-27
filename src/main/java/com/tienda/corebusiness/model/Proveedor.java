@@ -1,6 +1,7 @@
 package com.tienda.corebusiness.model;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "tbl_proveedor")
@@ -17,6 +18,9 @@ public class Proveedor {
     private String telefono;
 
     private String estado;
+
+    @OneToMany(mappedBy = "proveedor")
+    private List<Producto> productos;
 
     public Proveedor(String nombre, String correo, String telefono, String estado) {
         this.nombre = nombre;
