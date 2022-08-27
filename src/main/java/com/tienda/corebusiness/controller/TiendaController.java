@@ -34,7 +34,22 @@ public class TiendaController {
 
     @GetMapping("/productos")
     public List<Producto> getAllProductos(){
-        return productoService.getAllProductos();
+        List<Producto> productosCompress = productoService.getAllProductos();
+        List<Producto> productosDescompress = new ArrayList<>();
+        for(Producto p: productosCompress){
+            Producto producto = new Producto(p.getNombre(), p.getPrecio(),p.getStock(),p.getSrcImage(), productoService.decompressBytes(p.getPicByte()), p.getEstado(), p.getCategoria());
+            producto.setId(p.getId());
+            productosDescompress.add(producto);
+        }
+        return productosDescompress;
+    }
+
+    @GetMapping("/producto/{id}")
+    public Optional<Producto> getProductoById(@PathVariable("id") long id){
+        final Optional<Producto> p = productoService.getProductoById(id);
+        Producto producto = new Producto(p.get().getNombre(), p.get().getPrecio(),p.get().getStock(),p.get().getSrcImage(), productoService.decompressBytes(p.get().getPicByte()), p.get().getEstado(), p.get().getCategoria());
+        producto.setId(p.get().getId());
+        return Optional.of(producto);
     }
 
     @GetMapping("/banners")
