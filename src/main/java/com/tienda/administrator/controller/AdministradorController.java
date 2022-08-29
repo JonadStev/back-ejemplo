@@ -44,8 +44,8 @@ public class AdministradorController {
     BannerService bannerService;
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @GetMapping("/saludar")
-    public String getMessageAdmin(){
+    @GetMapping("/roles")
+    public String getRoles(){
         return "Hola administrador";
     }
 

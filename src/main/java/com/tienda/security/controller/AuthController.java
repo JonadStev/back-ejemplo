@@ -72,7 +72,7 @@ public class AuthController {
             passwordDelivery = this.getRandomString(10);
             usuario.setPassword(passwordEncoder.encode(passwordDelivery));
             try {
-                envioEmail.sendEmail(usuario.getEmail(),"CONTRASEÑA TEMPORAL", "Este es su usuario y contraseña temporal: "+usuario.getNombreUsuario()+" - "+passwordDelivery);
+                envioEmail.sendEmail(usuario.getEmail(),"CREDENCIALES DEL SISTEMA", "Este es su usuario y contraseña: "+usuario.getNombreUsuario()+" - "+passwordDelivery);
             }catch (Exception e){
                 System.out.println("Ocurrio un error en el envio de correo: "+e);
             }
@@ -83,6 +83,13 @@ public class AuthController {
             roles.add(rolService.getByRolNombre(RolNombre.ROLE_ADMIN).get());
             roles.add(rolService.getByRolNombre(RolNombre.ROLE_USER).get());
             roles.add(rolService.getByRolNombre(RolNombre.ROLE_DELIVERY).get());
+            passwordDelivery = this.getRandomString(10);
+            usuario.setPassword(passwordEncoder.encode(passwordDelivery));
+            try {
+                envioEmail.sendEmail(usuario.getEmail(),"CREDENCIALES DEL SISTEMA", "Este es su usuario y contraseña: "+usuario.getNombreUsuario()+" - "+passwordDelivery);
+            }catch (Exception e){
+                System.out.println("Ocurrio un error en el envio de correo: "+e);
+            }
         }
 
         usuario.setRoles(roles);

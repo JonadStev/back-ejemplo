@@ -27,9 +27,12 @@ public class DeliveryServiceImpl implements DeliveryService{
     public ArrayList<Usuario> getAllDelivery() {
 
         ArrayList<Usuario> listaUsuarios = (ArrayList<Usuario>) deliveryRepository.findAll();
-        Optional<Rol> OpRol =  rolService.getByRolNombre(RolNombre.ROLE_DELIVERY);
-        Set<Rol> roles = new HashSet<>();
-        roles.add(OpRol.get());
-        return (ArrayList<Usuario>) listaUsuarios.stream().filter(x -> x.getRoles().equals(roles)).collect(Collectors.toList());
+        //Optional<Rol> OpRol =  rolService.getByRolNombre(RolNombre.ROLE_DELIVERY);
+        //Optional<Rol> OpRolAdmin =  rolService.getByRolNombre(RolNombre.ROLE_ADMIN);
+        //Set<Rol> roles = new HashSet<>();
+        //roles.add(OpRol.get());
+        //roles.add(OpRolAdmin.get());
+        //return (ArrayList<Usuario>) listaUsuarios.stream().filter(x -> x.getRoles().contains(roles)).collect(Collectors.toList());
+        return listaUsuarios;
     }
 }

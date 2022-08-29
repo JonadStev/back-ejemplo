@@ -1,17 +1,17 @@
 package com.tienda.corebusiness.controller;
 
+import com.tienda.corebusiness.model.AddCar;
 import com.tienda.corebusiness.model.Banner;
 import com.tienda.corebusiness.model.Categoria;
 import com.tienda.corebusiness.model.Producto;
+import com.tienda.corebusiness.service.AddCarService;
 import com.tienda.corebusiness.service.BannerService;
 import com.tienda.corebusiness.service.CategoriaService;
 import com.tienda.corebusiness.service.ProductoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
 @RequestMapping("/tienda")
@@ -26,6 +26,37 @@ public class TiendaController {
 
     @Autowired
     BannerService bannerService;
+
+    @Autowired
+    AddCarService addCarService;
+
+    @PostMapping("/saveCar")
+    public AddCar saveCar(@RequestBody AddCar addCar){
+        return addCarService.saveCar(addCar);
+    }
+
+    @GetMapping("/getCarByUser/{username}")
+    public List<AddCar> getCarByUser(@PathVariable("username") String username){
+        return addCarService.getCarByUsuario(username);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public Map<String, String> deleteItemCar(@PathVariable("id") long id){
+        Map<String, String> map = new HashMap<>();
+        if(addCarService.deleteCar(id)) map.put("message", "Item eliminado");
+        else map.put("message", "Item no eliminado");
+        return map;
+    }
+
+    @DeleteMapping("/deleteAll")
+    public Map<String, String> deleteCar(){
+        Map<String, String> map = new HashMap<>();
+        addCarService.deleteAllCar();
+        map.put("message", "Carrito eliminado");
+        return map;
+    }
+
+
 
     @GetMapping("/getCategorias")
     public List<Categoria> getAllCategorias(){

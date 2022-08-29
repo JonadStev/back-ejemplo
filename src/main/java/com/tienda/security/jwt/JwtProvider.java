@@ -39,6 +39,7 @@ public class JwtProvider {
                 .setIssuedAt(new Date())
                 .claim("nombre",usuarioPrincipal.getNombre())
                 .claim("roles", roles)
+                .claim("username",usuarioPrincipal.getUsername())
                 .setExpiration(new Date(new Date().getTime() + expiration))
                 .signWith(SignatureAlgorithm.HS512, secret.getBytes())
                 .compact();
