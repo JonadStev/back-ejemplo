@@ -2,6 +2,7 @@ package com.tienda.corebusiness.controller;
 
 import com.tienda.corebusiness.model.*;
 import com.tienda.corebusiness.service.*;
+import com.tienda.corebusiness.tiendaDto.AsignarRepartidorDto;
 import com.tienda.corebusiness.tiendaDto.CarritoDto;
 import com.tienda.corebusiness.tiendaDto.OdenDto;
 import com.tienda.corebusiness.tiendaDto.ProductosMasVendidosDto;
@@ -50,7 +51,7 @@ public class TiendaController {
     public Map<String, String> saveOrden(@RequestBody OdenDto orden){
 
         Optional<Usuario> usuario = usuarioService.getByNombreUsuario(orden.getUsuario());
-        Orden ordenCompra = new Orden(usuario.get().getId(), orden.getDireccionEnvio(), orden.getMetodoPago(), orden.getEstadoPedido());
+        Orden ordenCompra = new Orden(usuario.get().getId(), usuario.get().getNombre(), orden.getDireccionEnvio(), orden.getMetodoPago(), orden.getEstadoPedido());
         List<OrdenDetalle> ordenDetalle = new ArrayList<>();
         for (CarritoDto carrito: orden.getCarrito()) {
             ordenDetalle.add(new OrdenDetalle(ordenCompra, carrito.getIdProducto(), carrito.getUsuario(), carrito.getCantidad(), carrito.getPrecio()));
@@ -119,7 +120,6 @@ public class TiendaController {
         for(long pmv: productosMasVendidosSinRepetir){
             if(contador == 10)
                 break;
-            System.out.println(pmv);
             Producto p = productoService.getProductoById(pmv).get();
             productosMasVendidos.add(new Producto(p.getNombre(), p.getDescripcion(), p.getPrecio(),p.getStock(),p.getSrcImage(), productoService.decompressBytes(p.getPicByte()), p.getEstado(), p.getCategoria(), p.getProveedor()));
             contador++;
@@ -138,4 +138,43 @@ public class TiendaController {
         }
         return bannerDescompress;
     }
+
+    @GetMapping("/ordenes")
+    public List<Orden> getAllOrden(){
+        return ordenService.getAllOrden();
+    }
+
+    @GetMapping("/ordenes/{usuarioRepartidor}")
+    public List<Orden> getOrdenesByRepartidor(@PathVariable("usuarioRepartidor") String usuarioRepartidor){
+        return ordenService.getOrdenByIdRepartidor(usuarioRepartidor);
+    }
+
+    @GetMapping("/orden/{id}")
+    public List<OrdenDetalle> getAllOrden(@PathVariable("id") long id){
+        return ordenService.getDetalleByIdOrden(id);
+    }
+
+    @PutMapping("/asignar")
+    public Map<String, String> asignarOrden(@RequestBody AsignarRepartidorDto req){
+        Map<String, String> map = new HashMap<>();
+        if(ordenService.asignarRepartidor(req.getUsuarioRepartidor(),req.getIdOrden())){
+            map.put("message", "Orden asignada con éxito.");
+        }else {
+            map.put("message", "No se pudo asignar la orden al repartidor.");
+        }
+
+        return map;
+    }
+
+    @PutMapping("/cerrarOrden")
+    public Map<String, String> cerrarOrden(@RequestBody AsignarRepartidorDto req){
+        Map<String, String> map = new HashMap<>();
+        if(ordenService.cerrarOrden(req.getUsuarioRepartidor(),req.getIdOrden())){
+            map.put("message", "Se ha marcado el pedido como ENTREGADO.");
+        }else {
+            map.put("message", "No se pudo cerrar la orden de entrega.");
+        }
+        return map;
+    }
+
 }

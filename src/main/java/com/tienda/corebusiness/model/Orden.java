@@ -1,6 +1,8 @@
 package com.tienda.corebusiness.model;
 
 import javax.persistence.*;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -12,6 +14,7 @@ public class Orden {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private long idUsuario;
+    private String nombreCliente;
     private long idRepartidor;
     private String direccionEnvio;
     private String metodoPago;
@@ -24,8 +27,9 @@ public class Orden {
     public Orden() {
     }
 
-    public Orden(long idUsuario, String direccionEnvio, String metodoPago, String estadoEntrega) {
+    public Orden(long idUsuario, String nombreCliente, String direccionEnvio, String metodoPago, String estadoEntrega) {
         this.idUsuario = idUsuario;
+        this.nombreCliente = nombreCliente;
         this.direccionEnvio = direccionEnvio;
         this.metodoPago = metodoPago;
         this.estadoEntrega = estadoEntrega;
@@ -80,8 +84,10 @@ public class Orden {
         this.estadoEntrega = estadoEntrega;
     }
 
-    public Date getFecha() {
-        return fecha;
+    public String getFecha() {
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        String strDate = dateFormat.format(fecha);
+        return strDate;
     }
 
     public void setFecha(Date fecha) {
@@ -94,5 +100,13 @@ public class Orden {
 
     public void setOrdenDetalle(List<OrdenDetalle> ordenDetalle) {
         this.ordenDetalle = ordenDetalle;
+    }
+
+    public String getNombreCliente() {
+        return nombreCliente;
+    }
+
+    public void setNombreCliente(String nombreCliente) {
+        this.nombreCliente = nombreCliente;
     }
 }

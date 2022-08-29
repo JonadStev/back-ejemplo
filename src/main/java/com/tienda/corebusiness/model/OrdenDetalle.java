@@ -1,6 +1,8 @@
 package com.tienda.corebusiness.model;
 
 import javax.persistence.*;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Entity
@@ -101,8 +103,10 @@ public class OrdenDetalle {
         this.total = total;
     }
 
-    public Date getFecha() {
-        return fecha;
+    public String getFecha() {
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        String strDate = dateFormat.format(fecha);
+        return strDate;
     }
 
     public void setFecha(Date fecha) {
@@ -111,5 +115,9 @@ public class OrdenDetalle {
 
     public void setOrden(Orden orden) {
         this.orden = orden;
+    }
+
+    public long getOrden() {
+        return orden.getId();
     }
 }

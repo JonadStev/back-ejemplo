@@ -13,7 +13,14 @@ public interface OrdenService {
     List<Orden> getAllOrden();
 
     Optional<Orden> getOrdenById(long id);
+    List<Orden> getOrdenByIdRepartidor(String nombreUsuario);
 
     List<OrdenDetalle> getAllDetalleOrden();
+    List<OrdenDetalle> getDetalleByIdOrden(long id);
+
+    boolean asignarRepartidor(String usuarioRepartidor, long idOrden);
+
+    boolean cerrarOrden(String usuarioRepartidor, long idOrden);
 
 }
+
