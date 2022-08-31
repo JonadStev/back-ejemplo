@@ -11,7 +11,9 @@ import com.tienda.security.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -101,6 +103,44 @@ public class OrdenServiceImpl implements OrdenService{
     @Override
     public List<ReportesVentasDto> getReporteVentas() {
         List<OrdenDetalle> detalles = this.getAllDetalleOrden();
+        List<ReportesVentasDto> ventas = new ArrayList<>();
+        for(OrdenDetalle d: detalles){
+            Optional<Usuario> u = usuarioService.getByNombreUsuario(d.getUsuario());
+            Optional<Producto> p = productoService.getProductoById(d.getIdProducto());
+            double subtotal = Math.round(d.getSubtotal()*100.0)/100.0;
+            double iva = Math.round(d.getIva()*100.0)/100.0;
+            ventas.add(new ReportesVentasDto(d.getId(),d.getOrden(),u.get().getNombre(),p.get().getNombre(),d.getCantidad(),d.getPrecio(),subtotal,iva,d.getTotal(),d.getFecha()));
+        }
+        return ventas;
+    }
+
+    @Override
+    public List<ReportesVentasDto> getReporteVentasByFecha(String des, String has) {
+
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+        Date dInicio = null;
+        Date dFinal = null;
+        try {
+            dInicio = formatter.parse(des);
+            dFinal = formatter.parse(has);
+        }catch (Exception e){
+            System.out.println(e);
+        }
+        List<OrdenDetalle> detalles = ordenDetalleRepository.findByFechaBetween(dInicio,dFinal);
+        List<ReportesVentasDto> ventas = new ArrayList<>();
+        for(OrdenDetalle d: detalles){
+            Optional<Usuario> u = usuarioService.getByNombreUsuario(d.getUsuario());
+            Optional<Producto> p = productoService.getProductoById(d.getIdProducto());
+            double subtotal = Math.round(d.getSubtotal()*100.0)/100.0;
+            double iva = Math.round(d.getIva()*100.0)/100.0;
+            ventas.add(new ReportesVentasDto(d.getId(),d.getOrden(),u.get().getNombre(),p.get().getNombre(),d.getCantidad(),d.getPrecio(),subtotal,iva,d.getTotal(),d.getFecha()));
+        }
+        return ventas;
+    }
+
+    @Override
+    public List<ReportesVentasDto> getReporteOrdenCompra(long idOrden) {
+        List<OrdenDetalle> detalles = getDetalleByIdOrden(idOrden);
         List<ReportesVentasDto> ventas = new ArrayList<>();
         for(OrdenDetalle d: detalles){
             Optional<Usuario> u = usuarioService.getByNombreUsuario(d.getUsuario());

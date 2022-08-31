@@ -1,6 +1,7 @@
 package com.tienda.corebusiness.repository;
 
 import com.tienda.corebusiness.model.OrdenDetalle;
+import com.tienda.corebusiness.model.Promociones;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -8,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 @Repository
-public interface OrdenDetalleRepository extends CrudRepository<OrdenDetalle, Long> {
+public interface PromocionesRepository extends CrudRepository<Promociones, Long> {
 
-    ArrayList<OrdenDetalle> findByFechaBetween(Date des, Date has);
+    ArrayList<Promociones> findByEstado(String estado);
 }

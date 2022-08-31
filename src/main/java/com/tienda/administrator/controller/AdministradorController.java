@@ -44,6 +44,9 @@ public class AdministradorController {
     @Autowired
     OrdenService ordenService;
 
+    @Autowired
+    PromocionesService promocionesService;
+
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/roles")
     public String getRoles(){
@@ -156,4 +159,31 @@ public class AdministradorController {
     public List<ReportesVentasDto> getReporteVentas(){
         return ordenService.getReporteVentas();
     }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @GetMapping("/ventasPorFecha")
+    public List<ReportesVentasDto> getReporteVentasByFecha(@RequestParam(name = "fechaDesde") String fechaDesde, @RequestParam(name = "fechaHasta") String fechaHasta){
+        return ordenService.getReporteVentasByFecha(fechaDesde,fechaHasta);
+    }
+
+    //PROMOCIONES DESCUENTOS
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PostMapping("/savePromocion")
+    public Promociones savePromocion(@RequestBody Promociones promocion){
+        return promocionesService.savePromocionNueva(promocion);
+    }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PostMapping("/updatePromocion")
+    public Promociones udpatePromocion(@RequestBody Promociones promocion){
+        return promocionesService.savePromocion(promocion);
+    }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @GetMapping("/promociones")
+    public List<Promociones> getPromociones(){
+        return promocionesService.getPromociones();
+    }
+
+
 }

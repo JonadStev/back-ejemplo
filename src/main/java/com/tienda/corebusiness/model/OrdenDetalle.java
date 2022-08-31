@@ -36,7 +36,15 @@ public class OrdenDetalle {
         this.subtotal = (this.cantidad * this.precio)/1.12;
         this.iva = (this.subtotal*0.12);
         this.total = this.cantidad * this.precio;
-        this.fecha = new Date();
+
+        String pattern = "yyyy-MM-dd";
+        SimpleDateFormat simpleDateFormat =new SimpleDateFormat(pattern);
+        String dateFormatString = simpleDateFormat.format(new Date());
+        Date dateF = null;
+        try {
+            dateF = simpleDateFormat.parse(dateFormatString);
+        }catch (Exception e){}
+        this.fecha = dateF;
     }
 
     public long getId() {

@@ -33,7 +33,15 @@ public class Orden {
         this.direccionEnvio = direccionEnvio;
         this.metodoPago = metodoPago;
         this.estadoEntrega = estadoEntrega;
-        this.fecha = new Date();
+
+        String pattern = "yyyy-MM-dd";
+        SimpleDateFormat simpleDateFormat =new SimpleDateFormat(pattern);
+        String dateFormatString = simpleDateFormat.format(new Date());
+        Date dateF = null;
+        try {
+            dateF = simpleDateFormat.parse(dateFormatString);
+        }catch (Exception e){}
+        this.fecha = dateF;
     }
 
     public long getId() {

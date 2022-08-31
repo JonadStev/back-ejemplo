@@ -1,11 +1,11 @@
 package com.tienda.corebusiness.controller;
 
+import com.tienda.administrator.Reportes.ReportesVentasDto;
 import com.tienda.corebusiness.model.*;
 import com.tienda.corebusiness.service.*;
 import com.tienda.corebusiness.tiendaDto.AsignarRepartidorDto;
 import com.tienda.corebusiness.tiendaDto.CarritoDto;
 import com.tienda.corebusiness.tiendaDto.OdenDto;
-import com.tienda.corebusiness.tiendaDto.ProductosMasVendidosDto;
 import com.tienda.security.model.Usuario;
 import com.tienda.security.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +37,9 @@ public class TiendaController {
     @Autowired
     OrdenService ordenService;
 
+    @Autowired
+    PromocionesService promocionesService;
+
     @PostMapping("/saveCar")
     public AddCar saveCar(@RequestBody AddCar addCar){
         return addCarService.saveCar(addCar);
@@ -64,6 +67,11 @@ public class TiendaController {
         Map<String, String> map = new HashMap<>();
         map.put("ORDEN_COMPRA", String.valueOf(idCompra));
         return map;
+    }
+
+    @GetMapping("/reporteOrdenCompra/{idOrden}")
+    public List<ReportesVentasDto> getReporteOrdenCompra(@PathVariable("idOrden") long idOrden){
+        return ordenService.getReporteOrdenCompra(idOrden);
     }
 
 
@@ -98,6 +106,19 @@ public class TiendaController {
         for(Producto p: productosCompress){
             Producto producto = new Producto(p.getNombre(), p.getDescripcion(), p.getPrecio(),p.getStock(),p.getSrcImage(), productoService.decompressBytes(p.getPicByte()), p.getEstado(), p.getCategoria(), p.getProveedor());
             producto.setId(p.getId());
+            productosDescompress.add(producto);
+        }
+        return productosDescompress;
+    }
+
+    @GetMapping("/productosByPromociones")
+    public List<Producto> getPromocionesByStatus(){
+        List<Promociones> promociones = promocionesService.getPromocionesByEstado("ACTIVO");
+        List<Producto> productosDescompress = new ArrayList<>();
+        for(Promociones promocion: promociones){
+            Optional<Producto> p = productoService.getProductoById(promocion.getIdProducto());
+            Producto producto = new Producto(p.get().getNombre(), p.get().getDescripcion(), promocion.getPrecioDescuento(),p.get().getStock(),p.get().getSrcImage(), productoService.decompressBytes(p.get().getPicByte()), p.get().getEstado(), p.get().getCategoria(), p.get().getProveedor());
+            producto.setId(p.get().getId());
             productosDescompress.add(producto);
         }
         return productosDescompress;

@@ -4,6 +4,8 @@ import com.tienda.administrator.Reportes.ReportesVentasDto;
 import com.tienda.corebusiness.model.Orden;
 import com.tienda.corebusiness.model.OrdenDetalle;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,6 +27,10 @@ public interface OrdenService {
 
     boolean cerrarOrden(String usuarioRepartidor, long idOrden);
     List<ReportesVentasDto> getReporteVentas();
+
+    List<ReportesVentasDto> getReporteVentasByFecha(String des, String has);
+
+    List<ReportesVentasDto> getReporteOrdenCompra(long idOrden);
 
 }
 
