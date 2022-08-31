@@ -150,7 +150,7 @@ public class TiendaController {
     }
 
     @GetMapping("/orden/{id}")
-    public List<OrdenDetalle> getAllOrden(@PathVariable("id") long id){
+    public List<OrdenDetalle> getDetalleByIdOrden(@PathVariable("id") long id){
         return ordenService.getDetalleByIdOrden(id);
     }
 

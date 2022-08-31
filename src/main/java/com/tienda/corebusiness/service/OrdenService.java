@@ -1,5 +1,6 @@
 package com.tienda.corebusiness.service;
 
+import com.tienda.administrator.Reportes.ReportesVentasDto;
 import com.tienda.corebusiness.model.Orden;
 import com.tienda.corebusiness.model.OrdenDetalle;
 
@@ -12,6 +13,8 @@ public interface OrdenService {
 
     List<Orden> getAllOrden();
 
+    List<Orden> getAllOrdenReportes();
+
     Optional<Orden> getOrdenById(long id);
     List<Orden> getOrdenByIdRepartidor(String nombreUsuario);
 
@@ -21,6 +24,7 @@ public interface OrdenService {
     boolean asignarRepartidor(String usuarioRepartidor, long idOrden);
 
     boolean cerrarOrden(String usuarioRepartidor, long idOrden);
+    List<ReportesVentasDto> getReporteVentas();
 
 }
 

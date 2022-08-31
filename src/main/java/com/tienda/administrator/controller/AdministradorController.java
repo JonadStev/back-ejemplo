@@ -1,10 +1,8 @@
 package com.tienda.administrator.controller;
 
 import com.google.gson.Gson;
-import com.tienda.corebusiness.model.Banner;
-import com.tienda.corebusiness.model.Categoria;
-import com.tienda.corebusiness.model.Producto;
-import com.tienda.corebusiness.model.Proveedor;
+import com.tienda.administrator.Reportes.ReportesVentasDto;
+import com.tienda.corebusiness.model.*;
 import com.tienda.corebusiness.service.*;
 import com.tienda.security.model.Usuario;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +40,9 @@ public class AdministradorController {
 
     @Autowired
     BannerService bannerService;
+
+    @Autowired
+    OrdenService ordenService;
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/roles")
@@ -142,5 +143,17 @@ public class AdministradorController {
         map.put("message", "El banner ha sido elimiando");
         bannerService.deleteBannerById(id);
         return map;
+    }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @GetMapping("/ordenesReportes")
+    public List<Orden> getAllOrden(){
+        return ordenService.getAllOrdenReportes();
+    }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @GetMapping("/ventas")
+    public List<ReportesVentasDto> getReporteVentas(){
+        return ordenService.getReporteVentas();
     }
 }
