@@ -1,8 +1,6 @@
 package com.tienda.security.controller;
 
 import com.tienda.Mail.EnvioEmail;
-import com.tienda.corebusiness.model.Categoria;
-import com.tienda.corebusiness.service.CategoriaService;
 import com.tienda.security.service.RolService;
 import com.tienda.security.service.UsuarioService;
 import com.tienda.security.dto.JwtDto;
@@ -24,10 +22,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.nio.charset.Charset;
 import java.text.ParseException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 @RestController
 @RequestMapping("/auth")
@@ -52,6 +47,7 @@ public class AuthController {
     @Autowired
     EnvioEmail envioEmail;
 
+
     @PostMapping("/nuevo")
     public ResponseEntity<?> nuevo(@RequestBody NuevoUsuario nuevoUsuario){
         String passwordDelivery = "";
@@ -64,7 +60,8 @@ public class AuthController {
                 nuevoUsuario.getEmail(),
                 nuevoUsuario.getNombreUsuario(),
                 passwordEncoder.encode(nuevoUsuario.getPassword()),
-                nuevoUsuario.getDireccion()
+                nuevoUsuario.getDireccion(),
+                nuevoUsuario.getEstado()
         );
         Set<Rol> roles = new HashSet<>();
         if(nuevoUsuario.getRoles().contains("delivery")){
@@ -99,6 +96,10 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<JwtDto> login(@RequestBody LoginUsuario loginUsuario){
+        Optional<Usuario> u = usuarioService.getByNombreUsuario(loginUsuario.getNombreUsuario());
+        if(u.get().getEstado().equalsIgnoreCase("INACTIVO")){
+            return new ResponseEntity(new JwtDto("NO_VALIDO"), HttpStatus.OK);
+        }
         Authentication authentication =
                 authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginUsuario.getNombreUsuario(),loginUsuario.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
