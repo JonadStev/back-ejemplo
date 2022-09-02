@@ -6,22 +6,15 @@ import com.tienda.corebusiness.model.*;
 import com.tienda.corebusiness.service.*;
 import com.tienda.security.model.Usuario;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.zip.DataFormatException;
-import java.util.zip.Deflater;
-import java.util.zip.Inflater;
 
 @RestController
 @RequestMapping("admin")
@@ -71,11 +64,21 @@ public class AdministradorController {
     @PostMapping("/saveProducto")
     public Producto saveProducto(@RequestParam("producto") String strProducto ,@RequestParam("fichero") MultipartFile file) throws IOException {
         String fileName = file.getOriginalFilename();
-        String uploadDir = "img/productos";
         Gson gson = new Gson();
         Producto producto = gson.fromJson(strProducto, Producto.class);
-        producto.setSrcImage(uploadDir+"/"+fileName);
-        producto.setPicByte(productoService.compressBytes(file.getBytes()));
+        if(producto.getId() != 0) { //No es un producto nuevo
+            if(!producto.getSrcImage().equalsIgnoreCase("SELECTED_IMG")){ //Buscar el producto por ID y setear la img
+                Optional<Producto> p = productoService.getProductoById(producto.getId());
+                producto.setPicByte(p.get().getPicByte());
+            }else{
+                producto.setPicByte(productoService.compressBytes(file.getBytes()));
+            }
+            Optional<Promociones> promo = promocionesService.getPromocionByIdProducto(producto.getId());
+            promo.get().setPrecio(producto.getPrecio());
+            promocionesService.savePromocion(promo.get());
+        }else {
+            producto.setPicByte(productoService.compressBytes(file.getBytes()));
+        }
         return productoService.saveProducto(producto);
     }
 
@@ -170,6 +173,8 @@ public class AdministradorController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/savePromocion")
     public Promociones savePromocion(@RequestBody Promociones promocion){
+        if(promocionesService.savePromocionNueva(promocion) == null)
+            return null;
         return promocionesService.savePromocionNueva(promocion);
     }
 

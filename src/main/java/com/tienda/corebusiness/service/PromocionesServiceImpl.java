@@ -32,8 +32,15 @@ public class PromocionesServiceImpl implements PromocionesService{
 
     @Override
     public Promociones savePromocionNueva(Promociones promocion) {
-        Promociones p = new Promociones(promocion.getIdProducto(),promocion.getNombreProducto(),promocion.getPrecio(),promocion.getDescuento(),promocion.getEstado());
 
+        List<Promociones> promociones = (List<Promociones>) promocionesRepository.findAll();
+        for(Promociones p: promociones){
+            if(p.getIdProducto() == promocion.getIdProducto()){
+                return null;
+            }
+        }
+
+        Promociones p = new Promociones(promocion.getIdProducto(),promocion.getNombreProducto(),promocion.getPrecio(),promocion.getDescuento(),promocion.getEstado());
         Optional<Producto> producto = productoService.getProductoById(p.getIdProducto());
         producto.get().setPrecio(p.getPrecioDescuento());
         productoService.saveProducto(producto.get());
@@ -49,5 +56,10 @@ public class PromocionesServiceImpl implements PromocionesService{
     @Override
     public List<Promociones> getPromociones() {
         return (List<Promociones>) promocionesRepository.findAll();
+    }
+
+    @Override
+    public Optional<Promociones> getPromocionByIdProducto(long id) {
+        return promocionesRepository.findByIdProducto(id);
     }
 }

@@ -3,6 +3,7 @@ package com.tienda.corebusiness.service;
 import com.tienda.corebusiness.model.Promociones;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface PromocionesService {
 
@@ -13,5 +14,7 @@ public interface PromocionesService {
     List<Promociones> getPromocionesByEstado(String estado);
 
     List<Promociones> getPromociones();
+
+    Optional<Promociones> getPromocionByIdProducto(long id);
 
 }

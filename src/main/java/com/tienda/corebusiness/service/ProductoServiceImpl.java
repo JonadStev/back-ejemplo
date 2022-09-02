@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.zip.DataFormatException;
 import java.util.zip.Deflater;
@@ -27,6 +28,11 @@ public class ProductoServiceImpl implements ProductoService{
     @Override
     public ArrayList<Producto> getAllProductos() {
         return (ArrayList<Producto>) productoRepository.findAll();
+    }
+
+    @Override
+    public List<Producto> getProductByLikeNombre(String nombre) {
+        return productoRepository.findByNombreContainingIgnoreCase(nombre);
     }
 
     @Override

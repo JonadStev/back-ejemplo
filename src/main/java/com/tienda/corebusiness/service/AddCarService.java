@@ -16,6 +16,6 @@ public interface AddCarService {
     List<AddCar> getCarByUsuario(String usuario);
 
     boolean deleteCar(long id);
-    void deleteAllCar();
+    void deleteAllCar(String userName);
 
 }

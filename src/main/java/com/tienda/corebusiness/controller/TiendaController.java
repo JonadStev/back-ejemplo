@@ -84,10 +84,10 @@ public class TiendaController {
         return map;
     }
 
-    @DeleteMapping("/deleteAll")
-    public Map<String, String> deleteCar(){
+    @DeleteMapping("/deleteAll/{userName}")
+    public Map<String, String> deleteCar(@PathVariable("userName")String userName){
         Map<String, String> map = new HashMap<>();
-        addCarService.deleteAllCar();
+        addCarService.deleteAllCar(userName);
         map.put("message", "Carrito eliminado");
         return map;
     }
@@ -106,10 +106,39 @@ public class TiendaController {
         for(Producto p: productosCompress){
             Producto producto = new Producto(p.getNombre(), p.getDescripcion(), p.getPrecio(),p.getStock(),p.getSrcImage(), productoService.decompressBytes(p.getPicByte()), p.getEstado(), p.getCategoria(), p.getProveedor());
             producto.setId(p.getId());
-            productosDescompress.add(producto);
+            if(producto.getEstado().equalsIgnoreCase("ACTIVO"))
+                productosDescompress.add(producto);
         }
         return productosDescompress;
     }
+
+    @GetMapping("/productos/findByCategory/{categoria}")
+    public List<Producto> getAllProductosfindByCategory(@PathVariable("categoria") long categoria){
+        List<Producto> productosCompress = productoService.getAllProductos();
+        List<Producto> productosDescompress = new ArrayList<>();
+        for(Producto p: productosCompress){
+            Producto producto = new Producto(p.getNombre(), p.getDescripcion(), p.getPrecio(),p.getStock(),p.getSrcImage(), productoService.decompressBytes(p.getPicByte()), p.getEstado(), p.getCategoria(), p.getProveedor());
+            producto.setId(p.getId());
+            if(producto.getEstado().equalsIgnoreCase("ACTIVO") && producto.getCategoria().getId() == categoria)
+                productosDescompress.add(producto);
+        }
+        return productosDescompress;
+    }
+
+    @GetMapping("/productos/findByLikeName/{nombre}")
+    public List<Producto> getProductByLikeNombre(@PathVariable("nombre") String nombre){
+        List<Producto> productosCompress = productoService.getProductByLikeNombre(nombre);
+        List<Producto> productosDescompress = new ArrayList<>();
+        for(Producto p: productosCompress){
+            Producto producto = new Producto(p.getNombre(), p.getDescripcion(), p.getPrecio(),p.getStock(),p.getSrcImage(), productoService.decompressBytes(p.getPicByte()), p.getEstado(), p.getCategoria(), p.getProveedor());
+            producto.setId(p.getId());
+            if(producto.getEstado().equalsIgnoreCase("ACTIVO"))
+                productosDescompress.add(producto);
+        }
+        return productosDescompress;
+    }
+
+
 
     @GetMapping("/productosByPromociones")
     public List<Producto> getPromocionesByStatus(){
@@ -119,7 +148,8 @@ public class TiendaController {
             Optional<Producto> p = productoService.getProductoById(promocion.getIdProducto());
             Producto producto = new Producto(p.get().getNombre(), p.get().getDescripcion(), promocion.getPrecioDescuento(),p.get().getStock(),p.get().getSrcImage(), productoService.decompressBytes(p.get().getPicByte()), p.get().getEstado(), p.get().getCategoria(), p.get().getProveedor());
             producto.setId(p.get().getId());
-            productosDescompress.add(producto);
+            if(producto.getEstado().equalsIgnoreCase("ACTIVO"))
+                productosDescompress.add(producto);
         }
         return productosDescompress;
     }
@@ -142,8 +172,12 @@ public class TiendaController {
             if(contador == 10)
                 break;
             Producto p = productoService.getProductoById(pmv).get();
-            productosMasVendidos.add(new Producto(p.getNombre(), p.getDescripcion(), p.getPrecio(),p.getStock(),p.getSrcImage(), productoService.decompressBytes(p.getPicByte()), p.getEstado(), p.getCategoria(), p.getProveedor()));
-            contador++;
+            Producto prd = new Producto(p.getNombre(), p.getDescripcion(), p.getPrecio(),p.getStock(),p.getSrcImage(), productoService.decompressBytes(p.getPicByte()), p.getEstado(), p.getCategoria(), p.getProveedor());
+            prd.setId(p.getId());
+            if(prd.getEstado().equalsIgnoreCase("ACTIVO")){
+                productosMasVendidos.add(prd);
+                contador++;
+            }
         }
         return productosMasVendidos;
     }

@@ -12,6 +12,8 @@ public class Categoria {
     private long id;
     private String nombreCategoria;
 
+    private String estado;
+
     @OneToMany(mappedBy = "categoria")
     private List<Producto> productos;
 
@@ -19,8 +21,9 @@ public class Categoria {
     public Categoria() {
     }
 
-    public Categoria(String nombreCategoria) {
+    public Categoria(String nombreCategoria, String estado) {
         this.nombreCategoria = nombreCategoria;
+        this.estado = estado;
     }
 
     public long getId() {
@@ -37,5 +40,13 @@ public class Categoria {
 
     public void setNombreCategoria(String nombreCategoria) {
         this.nombreCategoria = nombreCategoria;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
     }
 }

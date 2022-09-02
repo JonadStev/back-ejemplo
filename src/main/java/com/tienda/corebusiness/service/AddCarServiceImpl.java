@@ -48,8 +48,11 @@ public class AddCarServiceImpl implements AddCarService{
     }
 
     @Override
-    public void deleteAllCar() {
-        addCarRepository.deleteAll();
+    public void deleteAllCar(String userName) {
+        List<AddCar> lista = addCarRepository.findByUsuario(userName);
+        lista.forEach(x -> {
+            addCarRepository.delete(x);
+        });
     }
 
 
