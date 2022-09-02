@@ -74,8 +74,10 @@ public class AdministradorController {
                 producto.setPicByte(productoService.compressBytes(file.getBytes()));
             }
             Optional<Promociones> promo = promocionesService.getPromocionByIdProducto(producto.getId());
-            promo.get().setPrecio(producto.getPrecio());
-            promocionesService.savePromocion(promo.get());
+            if(!promo.isEmpty()){
+                promo.get().setPrecio(producto.getPrecio());
+                promocionesService.savePromocion(promo.get());
+            }
         }else {
             producto.setPicByte(productoService.compressBytes(file.getBytes()));
         }
