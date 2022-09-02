@@ -5,6 +5,7 @@ import com.tienda.administrator.Reportes.ReportesVentasDto;
 import com.tienda.corebusiness.model.*;
 import com.tienda.corebusiness.service.*;
 import com.tienda.security.model.Usuario;
+import com.tienda.security.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -40,10 +41,19 @@ public class AdministradorController {
     @Autowired
     PromocionesService promocionesService;
 
+    @Autowired
+    UsuarioService usuarioService;
+
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/roles")
     public String getRoles(){
         return "Hola administrador";
+    }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PostMapping("/updateUsuario")
+    public Usuario updateUsuario(@RequestBody Usuario usuario){
+        return usuarioService.udpateUser(usuario);
     }
 
     // ENDPOINT PARA LAS CATEGORIAS

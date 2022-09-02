@@ -27,7 +27,7 @@ public class Usuario {
     Se creará una tabla intermedia llamada MDC_USUARIO_ROL donde se mapearán las columnas
     principales de las clases Usuario y Rol, tomando sud @Id de cada clase
     */
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinTable(name = "TBL_USUARIO_ROL", joinColumns = @JoinColumn(name = "usuario_id"),
     inverseJoinColumns = @JoinColumn(name = "rol_id"))
     private Set<Rol> roles = new HashSet<>();

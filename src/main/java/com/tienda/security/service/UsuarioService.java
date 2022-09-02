@@ -31,5 +31,8 @@ public class UsuarioService {
         usuarioRepository.save(usuario);
     }
 
+    public Usuario udpateUser(Usuario usuario){
+        return usuarioRepository.save(usuario);
+    }
 
 }
