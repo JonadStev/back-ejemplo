@@ -185,8 +185,8 @@ public class AdministradorController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/savePromocion")
     public Promociones savePromocion(@RequestBody Promociones promocion){
-        if(promocionesService.savePromocionNueva(promocion) == null)
-            return null;
+        //if(promocionesService.savePromocionNueva(promocion) == null)
+        //    return null;
         return promocionesService.savePromocionNueva(promocion);
     }
 
