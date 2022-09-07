@@ -1,5 +1,6 @@
 package com.tienda.corebusiness.service;
 
+import com.tienda.administrator.Reportes.ReporteVentasComparativo;
 import com.tienda.administrator.Reportes.ReportesVentasDto;
 import com.tienda.corebusiness.model.Orden;
 import com.tienda.corebusiness.model.OrdenDetalle;
@@ -12,10 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.time.YearMonth;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -150,5 +149,86 @@ public class OrdenServiceImpl implements OrdenService{
             ventas.add(new ReportesVentasDto(d.getId(),d.getOrden(),u.get().getNombre(),p.get().getNombre(),d.getCantidad(),d.getPrecio(),subtotal,iva,d.getTotal(),d.getFecha()));
         }
         return ventas;
+    }
+
+    @Override
+    public List<ReporteVentasComparativo> getReporteVentasComparativo() {
+        int anioActual = YearMonth.now().getYear();
+        int anioAnterior = anioActual - 1;
+
+        List<ReporteVentasComparativo> reporteVentasComparativos = new ArrayList<>();
+
+        double [] ventasAnteriores = new double[12];
+        double [] ventasActuales = new double[12];
+
+        for (int i = 1; i <= 12; i++){
+
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+            String fechIni = "01/"+i+"/"+anioAnterior;
+            String fechFin = "";
+            try {
+                Date datei = sdf.parse(fechIni);
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(datei);
+                fechFin = calendar.getActualMaximum(Calendar.DAY_OF_MONTH)+"/"+i+"/"+anioAnterior;
+            }catch (Exception e){
+                System.out.println(e);
+            }
+
+            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+            Date dInicio = null;
+            Date dFinal = null;
+            try {
+                dInicio = formatter.parse(fechIni);
+                dFinal = formatter.parse(fechFin);
+            }catch (Exception e){
+                System.out.println(e);
+            }
+
+            double total = 0;
+
+            List<OrdenDetalle> detalles = ordenDetalleRepository.findByFechaBetween(dInicio,dFinal);
+            for(OrdenDetalle d: detalles){
+                total += d.getTotal();
+            }
+
+            ventasAnteriores[i-1] = total;
+        }
+
+        for (int i = 1; i <= 12; i++){
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+            String fechIni = "01/"+i+"/"+anioActual;
+            String fechFin = "";
+            try {
+                Date datei = sdf.parse(fechIni);
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(datei);
+                fechFin = calendar.getActualMaximum(Calendar.DAY_OF_MONTH)+"/"+i+"/"+anioActual;
+            }catch (Exception e){
+                System.out.println(e);
+            }
+
+            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+            Date dInicio = null;
+            Date dFinal = null;
+            try {
+                dInicio = formatter.parse(fechIni);
+                dFinal = formatter.parse(fechFin);
+            }catch (Exception e){
+                System.out.println(e);
+            }
+
+            double total = 0;
+
+            List<OrdenDetalle> detalles = ordenDetalleRepository.findByFechaBetween(dInicio,dFinal);
+            for(OrdenDetalle d: detalles){
+                total += d.getTotal();
+            }
+
+            ventasActuales[i-1] = total;
+        }
+        reporteVentasComparativos.add(new ReporteVentasComparativo(anioAnterior,ventasAnteriores));
+        reporteVentasComparativos.add(new ReporteVentasComparativo(anioActual,ventasActuales));
+        return reporteVentasComparativos;
     }
 }

@@ -1,6 +1,7 @@
 package com.tienda.security.controller;
 
 import com.tienda.Mail.EnvioEmail;
+import com.tienda.security.dto.ReseteoContrasenia;
 import com.tienda.security.service.RolService;
 import com.tienda.security.service.UsuarioService;
 import com.tienda.security.dto.JwtDto;
@@ -106,6 +107,21 @@ public class AuthController {
         String jwt = jwtProvider.generateToken(authentication);
         JwtDto jwtDto = new JwtDto(jwt);
         return new ResponseEntity(jwtDto, HttpStatus.OK);
+    }
+
+    @PostMapping("/restablecerPassword")
+    public Map<String, String> resetPassword(@RequestBody ReseteoContrasenia reseteoContrasenia){
+        Map<String, String> map = new HashMap<>();
+        if(!usuarioService.existsByNombreUsuario(reseteoContrasenia.getUsername())){
+            map.put("message", "El nombre de usuario no existe en nuestro sistema");
+            return map;
+        }
+        System.out.println("NO ENTRO EN LA VALIDACION");
+        Optional<Usuario> usuario = usuarioService.getByNombreUsuario(reseteoContrasenia.getUsername());
+        usuario.get().setPassword(passwordEncoder.encode(reseteoContrasenia.getPassword()));
+        usuarioService.save(usuario.get());
+        map.put("message", "Su contraseña ha sido modificada con éxito");
+        return map;
     }
 
     @PostMapping("/refreshToken")

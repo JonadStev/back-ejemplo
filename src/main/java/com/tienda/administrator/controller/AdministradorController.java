@@ -1,6 +1,7 @@
 package com.tienda.administrator.controller;
 
 import com.google.gson.Gson;
+import com.tienda.administrator.Reportes.ReporteVentasComparativo;
 import com.tienda.administrator.Reportes.ReportesVentasDto;
 import com.tienda.corebusiness.model.*;
 import com.tienda.corebusiness.service.*;
@@ -202,5 +203,10 @@ public class AdministradorController {
         return promocionesService.getPromociones();
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @GetMapping("/reporteComparativo")
+    public List<ReporteVentasComparativo> getReporteVentasComparativo() {
+        return ordenService.getReporteVentasComparativo();
+    }
 
 }

@@ -1,5 +1,6 @@
 package com.tienda.corebusiness.service;
 
+import com.tienda.administrator.Reportes.ReporteVentasComparativo;
 import com.tienda.administrator.Reportes.ReportesVentasDto;
 import com.tienda.corebusiness.model.Orden;
 import com.tienda.corebusiness.model.OrdenDetalle;
@@ -29,8 +30,9 @@ public interface OrdenService {
     List<ReportesVentasDto> getReporteVentas();
 
     List<ReportesVentasDto> getReporteVentasByFecha(String des, String has);
-
     List<ReportesVentasDto> getReporteOrdenCompra(long idOrden);
+
+    List<ReporteVentasComparativo> getReporteVentasComparativo();
 
 }
 
