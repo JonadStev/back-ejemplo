@@ -154,23 +154,27 @@ public class OrdenServiceImpl implements OrdenService{
     @Override
     public List<ReporteVentasComparativo> getReporteVentasComparativo() {
         int anioActual = YearMonth.now().getYear();
-        int anioAnterior = anioActual - 1;
+        int anio2021 = anioActual - 1;
+        int anio2020 = anio2021 -1;
+        int anio2019 = anio2020 - 1;
 
         List<ReporteVentasComparativo> reporteVentasComparativos = new ArrayList<>();
 
-        double [] ventasAnteriores = new double[12];
+        double [] ventas2019 = new double[12];
+        double [] ventas2020 = new double[12];
+        double [] ventas2021 = new double[12];
         double [] ventasActuales = new double[12];
 
         for (int i = 1; i <= 12; i++){
 
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-            String fechIni = "01/"+i+"/"+anioAnterior;
+            String fechIni = "01/"+i+"/"+anio2019;
             String fechFin = "";
             try {
                 Date datei = sdf.parse(fechIni);
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTime(datei);
-                fechFin = calendar.getActualMaximum(Calendar.DAY_OF_MONTH)+"/"+i+"/"+anioAnterior;
+                fechFin = calendar.getActualMaximum(Calendar.DAY_OF_MONTH)+"/"+i+"/"+anio2019;
             }catch (Exception e){
                 System.out.println(e);
             }
@@ -192,7 +196,75 @@ public class OrdenServiceImpl implements OrdenService{
                 total += d.getTotal();
             }
 
-            ventasAnteriores[i-1] = total;
+            ventas2019[i-1] = total;
+        }
+
+        for (int i = 1; i <= 12; i++){
+
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+            String fechIni = "01/"+i+"/"+anio2020;
+            String fechFin = "";
+            try {
+                Date datei = sdf.parse(fechIni);
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(datei);
+                fechFin = calendar.getActualMaximum(Calendar.DAY_OF_MONTH)+"/"+i+"/"+anio2020;
+            }catch (Exception e){
+                System.out.println(e);
+            }
+
+            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+            Date dInicio = null;
+            Date dFinal = null;
+            try {
+                dInicio = formatter.parse(fechIni);
+                dFinal = formatter.parse(fechFin);
+            }catch (Exception e){
+                System.out.println(e);
+            }
+
+            double total = 0;
+
+            List<OrdenDetalle> detalles = ordenDetalleRepository.findByFechaBetween(dInicio,dFinal);
+            for(OrdenDetalle d: detalles){
+                total += d.getTotal();
+            }
+
+            ventas2020[i-1] = total;
+        }
+
+        for (int i = 1; i <= 12; i++){
+
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+            String fechIni = "01/"+i+"/"+anio2021;
+            String fechFin = "";
+            try {
+                Date datei = sdf.parse(fechIni);
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(datei);
+                fechFin = calendar.getActualMaximum(Calendar.DAY_OF_MONTH)+"/"+i+"/"+anio2021;
+            }catch (Exception e){
+                System.out.println(e);
+            }
+
+            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+            Date dInicio = null;
+            Date dFinal = null;
+            try {
+                dInicio = formatter.parse(fechIni);
+                dFinal = formatter.parse(fechFin);
+            }catch (Exception e){
+                System.out.println(e);
+            }
+
+            double total = 0;
+
+            List<OrdenDetalle> detalles = ordenDetalleRepository.findByFechaBetween(dInicio,dFinal);
+            for(OrdenDetalle d: detalles){
+                total += d.getTotal();
+            }
+
+            ventas2021[i-1] = total;
         }
 
         for (int i = 1; i <= 12; i++){
@@ -227,7 +299,9 @@ public class OrdenServiceImpl implements OrdenService{
 
             ventasActuales[i-1] = total;
         }
-        reporteVentasComparativos.add(new ReporteVentasComparativo(anioAnterior,ventasAnteriores));
+        reporteVentasComparativos.add(new ReporteVentasComparativo(anio2019,ventas2019));
+        reporteVentasComparativos.add(new ReporteVentasComparativo(anio2020,ventas2020));
+        reporteVentasComparativos.add(new ReporteVentasComparativo(anio2021,ventas2021));
         reporteVentasComparativos.add(new ReporteVentasComparativo(anioActual,ventasActuales));
         return reporteVentasComparativos;
     }
